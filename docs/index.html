@@ -141,6 +141,8 @@ Error message and password prompt
 
 <p>This <a class="tc-tiddlylink-external" href="https://tiddlywiki.com" rel="noopener noreferrer" target="_blank">TiddlyWiki</a> contains the following tiddlers:</p><p><ul>
 
+<li>$:/config/RelinkOnRename</li>
+
 <li>$:/core</li>
 
 <li>$:/DefaultTiddlers</li>
@@ -158,6 +160,12 @@ Error message and password prompt
 <li>$:/isEncrypted</li>
 
 <li>$:/SiteTitle</li>
+
+<li>$:/state/Excise/--932845734/new-title</li>
+
+<li>$:/state/showeditpreview</li>
+
+<li>$:/state/sidebar</li>
 
 <li>$:/state/tab-1749438307</li>
 
@@ -375,7 +383,7 @@ Error message and password prompt
 
 <li>$:/themes/tiddlywiki/vanilla</li>
 
-<li>Golang Standard Library &amp; Other Picks</li>
+<li>Profiling a spark project</li>
 
 <li>ToC</li>
 
@@ -393,6 +401,9 @@ Error message and password prompt
 <!--~~ Ordinary tiddlers ~~-->
 
 <div id="storeArea" style="display:none;">
+<div created="20201114080627987" modified="20201114080627987" title="$:/config/RelinkOnRename">
+<pre>yes</pre>
+</div>
 <div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="TiddlyWiki5 core" list="readme" name="Core" plugin-priority="0" plugin-type="plugin" title="$:/core" type="application/json" version="5.1.22">
 <pre>{
     &quot;tiddlers&quot;: {
@@ -9790,10 +9801,19 @@ Error message and password prompt
 <div created="20201113072911079" modified="20201113072912662" title="$:/SiteTitle">
 <pre>Q's ~TiddlyWiki</pre>
 </div>
-<div created="20201113071849097" modified="20201113073311143" title="$:/state/tab-1749438307">
+<div created="20201114080041192" modified="20201114080041192" title="$:/state/Excise/--932845734/new-title">
+<pre> </pre>
+</div>
+<div created="20201114080721026" modified="20201114080732219" title="$:/state/showeditpreview">
+<pre>no</pre>
+</div>
+<div created="20201114081120307" modified="20201114081134012" title="$:/state/sidebar">
+<pre>yes</pre>
+</div>
+<div created="20201113071849097" modified="20201114081338637" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Saving</pre>
 </div>
-<div created="20201113071858221" modified="20201113073415496" title="$:/state/tab-2065006209">
+<div created="20201113071858221" modified="20201114081159928" title="$:/state/tab-2065006209">
 <pre>$:/core/ui/ControlPanel/Saving/GitHub</pre>
 </div>
 <div created="20201113072814846" modified="20201113072903429" title="$:/state/tab/sidebar--595412856">
@@ -9802,7 +9822,7 @@ Error message and password prompt
 <div title="$:/status/RequireReloadDueToPluginChange">
 <pre>no</pre>
 </div>
-<div created="20201113071846684" list="ToC $:/ControlPanel [[Golang Standard Library &amp; Other Picks]]" modified="20201113072955997" title="$:/StoryList">
+<div created="20201114022207434" list="$:/ControlPanel [[Profiling a spark project]] ToC" modified="20201114081244919" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -9818,19 +9838,19 @@ Error message and password prompt
         },
         &quot;$:/info/url/full&quot;: {
             &quot;title&quot;: &quot;$:/info/url/full&quot;,
-            &quot;text&quot;: &quot;file:///Users/qiu/Downloads/empty.html&quot;
+            &quot;text&quot;: &quot;https://qiukun.github.io/&quot;
         },
         &quot;$:/info/url/host&quot;: {
             &quot;title&quot;: &quot;$:/info/url/host&quot;,
-            &quot;text&quot;: &quot;&quot;
+            &quot;text&quot;: &quot;qiukun.github.io&quot;
         },
         &quot;$:/info/url/hostname&quot;: {
             &quot;title&quot;: &quot;$:/info/url/hostname&quot;,
-            &quot;text&quot;: &quot;&quot;
+            &quot;text&quot;: &quot;qiukun.github.io&quot;
         },
         &quot;$:/info/url/protocol&quot;: {
             &quot;title&quot;: &quot;$:/info/url/protocol&quot;,
-            &quot;text&quot;: &quot;file:&quot;
+            &quot;text&quot;: &quot;https:&quot;
         },
         &quot;$:/info/url/port&quot;: {
             &quot;title&quot;: &quot;$:/info/url/port&quot;,
@@ -9838,7 +9858,7 @@ Error message and password prompt
         },
         &quot;$:/info/url/pathname&quot;: {
             &quot;title&quot;: &quot;$:/info/url/pathname&quot;,
-            &quot;text&quot;: &quot;/Users/qiu/Downloads/empty.html&quot;
+            &quot;text&quot;: &quot;/&quot;
         },
         &quot;$:/info/url/search&quot;: {
             &quot;title&quot;: &quot;$:/info/url/search&quot;,
@@ -9846,7 +9866,7 @@ Error message and password prompt
         },
         &quot;$:/info/url/origin&quot;: {
             &quot;title&quot;: &quot;$:/info/url/origin&quot;,
-            &quot;text&quot;: &quot;file://&quot;
+            &quot;text&quot;: &quot;https://qiukun.github.io&quot;
         },
         &quot;$:/info/browser/screen/width&quot;: {
             &quot;title&quot;: &quot;$:/info/browser/screen/width&quot;,
@@ -10922,9 +10942,17 @@ This plugin also requires the JSZip plugin ([[$:/plugins/tiddlywiki/jszip]]) to 
     }
 }</pre>
 </div>
-<div created="20201113072853878" modified="20201113072955461" tags="" title="Golang Standard Library &amp; Other Picks">
-<pre>* Must know
+<div created="20201113072853878" modified="20201114081224561" tags="" title="Profiling a spark project">
+<pre>The project is a streaming computing deal with access logs collected from the gateways, which keep coming from a mobile app. It aims at providing data for networking status displaying and monitoring.
 
+The project has two phases:
+
+# parse and get userid, ip, geolocation, etc from the log, state as tuples.
+# get the sum of concerned combinations, like what's the total user that is using China Mobile as ISP? By expanding the tuples like (a, b) to (a, b), (all, b), (a, all) and (all, all), and then counting on them.
+
+
+Appendix:
+What is a RDD?
 </pre>
 </div>
 <div created="20201113073030260" modified="20201113073409376" tags="" title="ToC">
