@@ -10942,15 +10942,16 @@ This plugin also requires the JSZip plugin ([[$:/plugins/tiddlywiki/jszip]]) to 
     }
 }</pre>
 </div>
-<div created="20201113072853878" modified="20201114095307121" tags="" title="Profiling a spark project">
+<div created="20201113072853878" modified="20201114100057532" tags="" title="Profiling a spark project">
 <pre>The project is a streaming computing deal with access logs collected from the gateways, which keep coming from a mobile app. It aims at providing data for networking status displaying and monitoring.
 
 The project has two phases:
 
 1. parse and get userid, ip, geolocation, etc from the log, state as tuples.
+
 2. get the sum of concerned combinations, like what's the total user that is using China Mobile as ISP? By expanding the tuples like (a, b) to (a, b), (all, b), (a, all) and (all, all), and then counting on them.
 
-
+The estimated max throughput of the logs is 100K and 
 
 Appendix:
 spark_programming_performance_diagnosis.pdf
