@@ -383,9 +383,9 @@ Error message and password prompt
 
 <li>$:/themes/tiddlywiki/vanilla</li>
 
-<li>Profiling a spark project</li>
-
 <li>ToC</li>
+
+<li>What did mnist.go do?</li>
 
 </ul>
 </p>
@@ -9804,11 +9804,11 @@ Error message and password prompt
 <div created="20201114080041192" modified="20201114080041192" title="$:/state/Excise/--932845734/new-title">
 <pre> </pre>
 </div>
-<div created="20201114080721026" modified="20201114080732219" title="$:/state/showeditpreview">
-<pre>no</pre>
-</div>
-<div created="20201114081120307" modified="20201114081134012" title="$:/state/sidebar">
+<div created="20201114080721026" modified="20201115064813682" title="$:/state/showeditpreview">
 <pre>yes</pre>
+</div>
+<div created="20201114081120307" modified="20201115064816892" title="$:/state/sidebar">
+<pre>no</pre>
 </div>
 <div created="20201113071849097" modified="20201114081338637" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Saving</pre>
@@ -9822,7 +9822,7 @@ Error message and password prompt
 <div title="$:/status/RequireReloadDueToPluginChange">
 <pre>no</pre>
 </div>
-<div created="20201114081412187" list="[[Profiling a spark project]] ToC" modified="20201114081412187" title="$:/StoryList">
+<div created="20201115064736815" list="[[What did mnist.go do?]] ToC" modified="20201115064736815" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -10942,23 +10942,187 @@ This plugin also requires the JSZip plugin ([[$:/plugins/tiddlywiki/jszip]]) to 
     }
 }</pre>
 </div>
-<div created="20201113072853878" modified="20201114100057532" tags="" title="Profiling a spark project">
-<pre>The project is a streaming computing deal with access logs collected from the gateways, which keep coming from a mobile app. It aims at providing data for networking status displaying and monitoring.
-
-The project has two phases:
-
-1. parse and get userid, ip, geolocation, etc from the log, state as tuples.
-
-2. get the sum of concerned combinations, like what's the total user that is using China Mobile as ISP? By expanding the tuples like (a, b) to (a, b), (all, b), (a, all) and (all, all), and then counting on them.
-
-The estimated max throughput of the logs is 100K and 
-
-Appendix:
-spark_programming_performance_diagnosis.pdf
-</pre>
-</div>
 <div created="20201113073030260" modified="20201113073409376" tags="" title="ToC">
 <pre></pre>
+</div>
+<div created="20201113072853878" modified="20201115064900410" tags="" title="What did mnist.go do?">
+<pre>package main
+
+import (
+	&quot;encoding/gob&quot;
+	&quot;flag&quot;
+	&quot;fmt&quot;
+	&quot;log&quot;
+	&quot;os&quot;
+	&quot;path/filepath&quot;
+	&quot;strings&quot;
+	&quot;time&quot;
+
+	torch &quot;github.com/wangkuiyi/gotorch&quot;
+	F &quot;github.com/wangkuiyi/gotorch/nn/functional&quot;
+	&quot;github.com/wangkuiyi/gotorch/nn/initializer&quot;
+	&quot;github.com/wangkuiyi/gotorch/vision/imageloader&quot;
+	&quot;github.com/wangkuiyi/gotorch/vision/models&quot;
+	&quot;github.com/wangkuiyi/gotorch/vision/transforms&quot;
+	&quot;gocv.io/x/gocv&quot;
+)
+
+var device torch.Device
+
+func main() {
+	if torch.IsCUDAAvailable() {
+		log.Println(&quot;CUDA is valid&quot;)
+		device = torch.NewDevice(&quot;cuda&quot;)
+	} else {
+		log.Println(&quot;No CUDA found; CPU only&quot;)
+		device = torch.NewDevice(&quot;cpu&quot;)
+	}
+
+	initializer.ManualSeed(1)
+
+	trainCmd := flag.NewFlagSet(&quot;train&quot;, flag.ExitOnError)
+	trainTar := trainCmd.String(&quot;data&quot;, &quot;/tmp/mnist_png_training_shuffled.tar.gz&quot;, &quot;data tarball&quot;)
+	testTar := trainCmd.String(&quot;test&quot;, &quot;/tmp/mnist_png_testing_shuffled.tar.gz&quot;, &quot;data tarball&quot;)
+	save := trainCmd.String(&quot;save&quot;, &quot;/tmp/mnist_model.gob&quot;, &quot;the model file&quot;)
+	epoch := trainCmd.Int(&quot;epoch&quot;, 5, &quot;the number of epochs&quot;)
+
+	predictCmd := flag.NewFlagSet(&quot;predict&quot;, flag.ExitOnError)
+	load := predictCmd.String(&quot;load&quot;, &quot;/tmp/mnist_model.gob&quot;, &quot;the model file&quot;)
+
+	if len(os.Args) &lt; 2 {
+		fmt.Fprintf(os.Stderr, &quot;Usage: %s needs subcomamnd train or predict\n&quot;, os.Args[0])
+		os.Exit(1)
+	}
+
+	switch os.Args[1] {
+	case &quot;train&quot;:
+		trainCmd.Parse(os.Args[2:])
+		train(*trainTar, *testTar, *epoch, *save)
+	case &quot;predict&quot;:
+		predictCmd.Parse(os.Args[2:])
+		predict(*load, predictCmd.Args())
+	}
+}
+
+func train(trainFn, testFn string, epochs int, save string) {
+	vocab, e := imageloader.BuildLabelVocabularyFromTgz(trainFn)
+	if e != nil {
+		panic(e)
+	}
+	net := models.MLP()
+	net.To(device)
+	opt := torch.SGD(0.01, 0.5, 0, 0, false)
+	opt.AddParameters(net.Parameters())
+	defer torch.FinishGC()
+
+	for epoch := 0; epoch &lt; epochs; epoch++ {
+		var trainLoss float32
+		startTime := time.Now()
+		trainLoader := MNISTLoader(trainFn, vocab)
+		testLoader := MNISTLoader(testFn, vocab)
+		totalSamples := 0
+		for trainLoader.Scan() {
+			data, label := trainLoader.Minibatch()
+			totalSamples += int(data.Shape()[0])
+			opt.ZeroGrad()
+			pred := net.Forward(data.To(device, data.Dtype()))
+			loss := F.NllLoss(pred, label.To(device, label.Dtype()), torch.Tensor{}, -100, &quot;mean&quot;)
+			loss.Backward()
+			opt.Step()
+			trainLoss = loss.Item().(float32)
+		}
+		throughput := float64(totalSamples) / time.Since(startTime).Seconds()
+		log.Printf(&quot;Train Epoch: %d, Loss: %.4f, throughput: %f samples/sec&quot;, epoch, trainLoss, throughput)
+		test(net, testLoader)
+	}
+	saveModel(net, save)
+}
+
+// MNISTLoader returns a ImageLoader with MNIST training or testing tgz file
+func MNISTLoader(fn string, vocab map[string]int) *imageloader.ImageLoader {
+	trans := transforms.Compose(transforms.ToTensor(), transforms.Normalize([]float32{0.1307}, []float32{0.3081}))
+	loader, e := imageloader.New(fn, vocab, trans, 64, 64, time.Now().UnixNano(), torch.IsCUDAAvailable(), &quot;gray&quot;)
+	if e != nil {
+		panic(e)
+	}
+	return loader
+}
+
+func test(model *models.MLPModule, loader *imageloader.ImageLoader) {
+	testLoss := float32(0)
+	correct := int64(0)
+	samples := 0
+	for loader.Scan() {
+		data, label := loader.Minibatch()
+		data = data.To(device, data.Dtype())
+		label = label.To(device, label.Dtype())
+		output := model.Forward(data)
+		loss := F.NllLoss(output, label, torch.Tensor{}, -100, &quot;mean&quot;)
+		pred := output.Argmax(1)
+		testLoss += loss.Item().(float32)
+		correct += pred.Eq(label.View(pred.Shape()...)).Sum(map[string]interface{}{&quot;dim&quot;: 0, &quot;keepDim&quot;: false}).Item().(int64)
+		samples += int(label.Shape()[0])
+	}
+	log.Printf(&quot;Test average loss: %.4f, Accuracy: %.2f%%\n&quot;,
+		testLoss/float32(samples), 100.0*float32(correct)/float32(samples))
+}
+
+func saveModel(model *models.MLPModule, modelFn string) {
+	log.Println(&quot;Saving model to&quot;, modelFn)
+	f, e := os.Create(modelFn)
+	if e != nil {
+		log.Fatalf(&quot;Cannot create file to save model: %v&quot;, e)
+	}
+	defer f.Close()
+
+	d := torch.NewDevice(&quot;cpu&quot;)
+	model.To(d)
+	if e := gob.NewEncoder(f).Encode(model.StateDict()); e != nil {
+		log.Fatal(e)
+	}
+}
+
+func predict(modelFn string, inputs []string) {
+	net := loadModel(modelFn)
+
+	for _, in := range inputs {
+		for _, pa := range strings.Split(in, &quot;:&quot;) {
+			fns, e := filepath.Glob(pa)
+			if e != nil {
+				log.Fatal(e)
+			}
+
+			for _, fn := range fns {
+				predictFile(fn, net)
+			}
+		}
+	}
+}
+
+func loadModel(modelFn string) *models.MLPModule {
+	f, e := os.Open(modelFn)
+	if e != nil {
+		log.Fatal(e)
+	}
+	defer f.Close()
+
+	states := make(map[string]torch.Tensor)
+	if e := gob.NewDecoder(f).Decode(&amp;states); e != nil {
+		log.Fatal(e)
+	}
+
+	net := models.MLP()
+	net.SetStateDict(states)
+	return net
+}
+
+func predictFile(fn string, m *models.MLPModule) {
+	img := gocv.IMRead(fn, gocv.IMReadGrayScale)
+	t := transforms.ToTensor().Run(img)
+	n := transforms.Normalize([]float32{0.1307}, []float32{0.3081}).Run(t)
+	fmt.Println(m.Forward(n).Argmax().Item())
+}
+</pre>
 </div>
 
 
