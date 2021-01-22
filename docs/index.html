@@ -169,6 +169,8 @@ Error message and password prompt
 
 <li>$:/state/Excise/--932845734/new-title</li>
 
+<li>$:/state/Excise/-254203183/new-title</li>
+
 <li>$:/state/showeditpreview</li>
 
 <li>$:/state/sidebar</li>
@@ -195,7 +197,7 @@ Error message and password prompt
 
 <li>COVID-19 revised</li>
 
-<li>On Error, with Golang</li>
+<li>On Error, with Golang (Draft)</li>
 
 <li>ToC</li>
 
@@ -9829,6 +9831,9 @@ Error message and password prompt
 <div created="20201114080041192" modified="20201114080041192" title="$:/state/Excise/--932845734/new-title">
 <pre> </pre>
 </div>
+<div created="20210122141645239" modified="20210122141645239" title="$:/state/Excise/-254203183/new-title">
+<pre> </pre>
+</div>
 <div created="20201114080721026" modified="20210122140804165" title="$:/state/showeditpreview">
 <pre>no</pre>
 </div>
@@ -9838,8 +9843,8 @@ Error message and password prompt
 <div created="20201113071849097" modified="20201230021059006" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Saving</pre>
 </div>
-<div created="20201113071858221" modified="20201230021059910" title="$:/state/tab-2065006209">
-<pre>$:/core/ui/ControlPanel/Saving/General</pre>
+<div created="20201113071858221" modified="20210122141503806" title="$:/state/tab-2065006209">
+<pre>$:/core/ui/ControlPanel/Saving/GitHub</pre>
 </div>
 <div created="20201113072814846" modified="20201113072903429" title="$:/state/tab/sidebar--595412856">
 <pre>$:/core/ui/SideBar/Recent</pre>
@@ -9847,7 +9852,7 @@ Error message and password prompt
 <div title="$:/status/RequireReloadDueToPluginChange">
 <pre>no</pre>
 </div>
-<div created="20210122134956979" list="[[What did mnist.go do?]] [[On Error, with Golang]] ToC" modified="20210122134956979" title="$:/StoryList">
+<div created="20210122134956979" list="[[On Error, with Golang (Draft)]] ToC" modified="20210122141500670" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20201115064940095" modified="20201115064940095" title="$:/temp/HidePluginWarning">
@@ -10034,9 +10039,9 @@ Error message and password prompt
 * 对于不少中国人来说不出门不算什么，这个是很有利的条件。
 </pre>
 </div>
-<div created="20210122134926158" modified="20210122141445309" tags="" title="On Error, with Golang">
+<div created="20210122134926158" modified="20210122141706417" tags="" title="On Error, with Golang (Draft)">
 <pre>Generally, we should deal with the errors as early as possible. For example, if we cannot access the DB, we should immediately terminate the request. To achieve this, we must separate each request on different goroutine so that we could just call panic. https://github.com/go-chi/chi/blob/master/middleware/recoverer.go
-
+Note that all the resources held by the request should be released properly when a panic happened.
 
 [[Errors are values|https://blog.golang.org/errors-are-values]]
 A monad way to avoid repetitive error-checking.
