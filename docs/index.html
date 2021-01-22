@@ -195,6 +195,8 @@ Error message and password prompt
 
 <li>COVID-19 revised</li>
 
+<li>On Error, with Golang</li>
+
 <li>ToC</li>
 
 <li>What did mnist.go do?</li>
@@ -9827,7 +9829,7 @@ Error message and password prompt
 <div created="20201114080041192" modified="20201114080041192" title="$:/state/Excise/--932845734/new-title">
 <pre> </pre>
 </div>
-<div created="20201114080721026" modified="20201230002347437" title="$:/state/showeditpreview">
+<div created="20201114080721026" modified="20210122140804165" title="$:/state/showeditpreview">
 <pre>no</pre>
 </div>
 <div created="20201114081120307" modified="20201230001628616" title="$:/state/sidebar">
@@ -9845,7 +9847,7 @@ Error message and password prompt
 <div title="$:/status/RequireReloadDueToPluginChange">
 <pre>no</pre>
 </div>
-<div created="20201230021158887" list="ToC" modified="20201230021158887" title="$:/StoryList">
+<div created="20210122134956979" list="[[What did mnist.go do?]] [[On Error, with Golang]] ToC" modified="20210122134956979" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20201115064940095" modified="20201115064940095" title="$:/temp/HidePluginWarning">
@@ -10031,6 +10033,14 @@ Error message and password prompt
 * 过度反应并不过度，比起 COVID-19 本身，次生影响似乎更大，对于宏观的影响可以参考张文宏的论断，对于个人来讲，得了这个怕是要影响上学上班的，即便年轻人其实预后良好。
 * 对于不少中国人来说不出门不算什么，这个是很有利的条件。
 </pre>
+</div>
+<div created="20210122134926158" modified="20210122141445309" tags="" title="On Error, with Golang">
+<pre>Generally, we should deal with the errors as early as possible. For example, if we cannot access the DB, we should immediately terminate the request. To achieve this, we must separate each request on different goroutine so that we could just call panic. https://github.com/go-chi/chi/blob/master/middleware/recoverer.go
+
+
+[[Errors are values|https://blog.golang.org/errors-are-values]]
+A monad way to avoid repetitive error-checking.
+[[</pre>
 </div>
 <div created="20201113073030260" modified="20201113073409376" tags="" title="ToC">
 <pre></pre>
